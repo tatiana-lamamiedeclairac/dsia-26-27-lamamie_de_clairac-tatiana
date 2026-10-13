@@ -14,7 +14,7 @@ def load_sales(path: str | Path) -> pd.DataFrame: # Esperamos que path sea un st
     except pd.errors.EmptyDataError as e:
         raise DataLoadError(f"Error {e}. El archivo está vacío. ")
 
-    except pd.errors.ParseError as e:
+    except pd.errors.ParserError as e:
         raise DataLoadError(f"Error {e}. El archivo CSV no tiene un formato válido. ")
 
     return df

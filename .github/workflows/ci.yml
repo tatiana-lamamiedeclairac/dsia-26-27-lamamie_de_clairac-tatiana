@@ -1,0 +1,32 @@
+name: Tests Proyecto I
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: proyecto_1
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Instalar dependencias
+        run: uv sync
+
+      - name: Ejecutar tests y cobertura
+        run: uv run python -m pytest -q --cov=parte_a.ventas_app --cov=parte_b.citybreak_app --cov-report=term-missing --cov-fail-under=60
