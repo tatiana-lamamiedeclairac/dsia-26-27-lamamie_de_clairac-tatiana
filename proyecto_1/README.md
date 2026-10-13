@@ -1,230 +1,285 @@
-# Proyecto I — Programación avanzada en Python (10 %)
 
-**Temas:** 1 (y pytest + CI del Tema 2)  
-**Presentación / arranque en clase:** 14 de septiembre de 2026  
-**Entrega orientativa:** tras la sesión de pytest/CI (**28 sep 2026**), salvo indicación distinta en aula.
+# Proyecto I - Programación avanzada en Python
 
-## Objetivo
+Este proyecto corresponde a la asignatura de Programación Avanzada en Python.
 
-Desarrollar **dos** soluciones en Python que demuestren:
+El objetivo es desarrollar dos programas que permitan cargar datos desde archivos CSV, validar la información y calcular diferentes métricas.
 
-- Estructuras de datos adecuadas
-- OOP
-- Tratamiento de errores
-- Validación y manipulación de datos
-- **Tests unitarios con pytest**
-- **CI con GitHub Actions** (validación automática del código)
-- Buenas prácticas y documentación
+El proyecto está dividido en dos partes:
 
-**Las dos partes son obligatorias** y entran en la misma nota del Proyecto I (10 %).
+- **Parte A:** análisis de datos de ventas.
+- **Parte B:** análisis de preferencias de destinos turísticos.
 
----
+Ambas partes utilizan Python, pandas y pytest.
 
-## Parte A — Pipeline de ventas (dataset del curso)
-
-Construye un **pipeline de calidad de datos de ventas** a partir de `Datos/ventas.csv` (o una copia en tu repo):
-
-1. Carga y validación con excepciones de dominio.
-2. Métricas de negocio (importe por región/producto, etc.).
-3. CLI usable (`python -m ...`).
-4. **Tests** de **todos** los módulos: `loader`, `validator`, `metrics` y `cli`.
-5. **CI** en GitHub Actions (pytest + cobertura ≥ 60 %).
-6. README + docstrings.
-
-Estructura orientativa (la de clase):
+## 1. Estructura del proyecto
 
 ```text
-ventas_app/
-  loader.py
-  validator.py
-  metrics.py
-  cli.py
-tests/
-  test_loader.py
-  test_validator.py
-  test_metrics.py
-  test_cli.py
+proyecto_1/
+├── .github/
+│   └── workflows/
+│       └── ci.yml
+├── parte_a/
+│   ├── ventas_app/
+│   │   ├── exceptions.py
+│   │   ├── loader.py
+│   │   ├── validator.py
+│   │   ├── metrics.py
+│   │   └── cli.py
+│   ├── data/
+│   │   └── ventas.csv
+│   └── tests/
+│       ├── test_loader.py
+│       ├── test_validator.py
+│       ├── test_metrics.py
+│       └── test_cli.py
+├── parte_b/
+│   ├── citybreak_app/
+│   │   ├── exceptions.py
+│   │   ├── loader.py
+│   │   ├── validator.py
+│   │   ├── metrics.py
+│   │   └── cli.py
+│   ├── data/
+│   │   └── stravl_citybreak_subset.csv
+│   └── tests/
+│       ├── test_loader.py
+│       ├── test_validator.py
+│       ├── test_metrics.py
+│       └── test_cli.py
+├── pyproject.toml
+├── uv.lock
+└── README.md
 ```
 
----
+## 2. Parte A - Análisis de ventas
 
-## Parte B — Pipeline con datos elegidos de internet
+La Parte A utiliza un dataset de ventas proporcionado por el profesor.
 
-Repite el **mismo tipo de solución** (carga → validación → métricas → CLI → **tests**), pero con un **dataset público elegido por ti**.
+1. Carga el archivo CSV mediante pandas.
+2. Comprueba qué ventas son válidas e inválidas.
+3. Separa las ventas válidas de las inválidas.
+4. Calcula diferentes métricas utilizando únicamente las ventas válidas.
+5. Muestra los resultados en la terminal.
 
-### Requisitos del dataset
+### Reglas de validación
 
-1. Debe ser **descargable o enlazable** desde internet (CSV, JSON, API pública, portal open data, Kaggle, datos.gov, etc.).
-2. Indica en el README: **URL de origen**, licencia/condiciones de uso y fecha de descarga.
-3. Incluye en el repo una **muestra** razonable (p. ej. miles de filas como máximo) o un script de descarga documentado; no subas ficheros enormes.
-4. Define **reglas de validación propias** (nulos, rangos, tipos, duplicados, etc.) acordes al dominio elegido.
-5. Calcula **al menos 3 métricas / agregaciones** con sentido para esos datos.
-6. Incluye **tests** de **todos** los módulos: `loader`, `validator`, `metrics` y `cli`.
-7. El mismo **CI** del repo debe validar también esta parte (mismo workflow).
+Una venta es válida cuando:
 
-### Qué se evalúa de más en la Parte B
+- Las unidades son numéricas, no nulas y mayores que 0.
+- El precio unitario es numérico, no nulo y mayor que 0.
 
-- Criterio al elegir y describir el dataset.
-- Que el diseño no sea un copiar-pegar ciego: adaptas nombres, reglas y métricas al nuevo dominio.
-- Reutilización sensata de ideas de la Parte A (módulos, excepciones, CLI, tests) sin acoplar ambos pipelines en un solo “mega-script”.
+### Métricas calculadas
 
-Estructura orientativa (misma forma que la Parte A):
+- Importe total de todas las ventas válidas.
+- Importe total vendido por región.
+- Importe total vendido por producto.
 
-```text
-internet_app/          # o el nombre de tu dominio
-  loader.py
-  validator.py
-  metrics.py
-  cli.py
-tests/
-  test_loader.py
-  test_validator.py
-  test_metrics.py
-  test_cli.py
-```
+El importe de cada venta se calcula multiplicando las unidades por el precio unitario.
 
-### Estructura del repositorio (A + B juntas)
+### Ejecución
 
-Ambas partes siguen el **mismo patrón**. En la práctica, separa tests por paquete para no mezclarlos:
-
-```text
-proyecto_i/
-  ventas_app/
-    loader.py
-    validator.py
-    metrics.py
-    cli.py
-  internet_app/            # o el nombre de tu dominio
-    loader.py
-    validator.py
-    metrics.py
-    cli.py
-  tests/
-    ventas/
-      test_loader.py
-      test_validator.py
-      test_metrics.py
-      test_cli.py
-    internet/              # o el nombre de tu dominio
-      test_loader.py
-      test_validator.py
-      test_metrics.py
-      test_cli.py
-  data/
-    dateset.csv
-  .github/workflows/ci.yml
-  requirements.txt
-  README.md
-```
-
-(El workflow `.github/workflows/ci.yml` es **único** para el repo y cubre A + B.)
-
----
-
-## Tests unitarios (obligatorio en A y B)
-
-Referencia de clase: `2_pruebas_y_despliegue/01_pytest_intro.md` y `ejercicios/E3_pytest.md`.  
-CI (siguiente bloque): `2_pruebas_y_despliegue/02_ci_github.md` y `ejercicios/E4_ci_github.md`.
-
-### Cobertura obligatoria por módulo (A y B)
-
-Cada parte (A y B) debe testear **los cuatro elementos**:
-
-| Módulo | Qué debe cubrirse (mínimo) |
-| --- | --- |
-| **loader** | Carga correcta; path inexistente → excepción de dominio (`pytest.raises`) |
-| **validator** | Filas válidas vs inválidas; bordes con `parametrize` (p. ej. 0, -1, nulos) |
-| **metrics** | Al menos una agregación con resultado conocido sobre fixture en memoria |
-| **cli** | Smoke test del punto de entrada (p. ej. `main` / `parse_args` / ejecución con `tmp_path` o argumentos controlados) sin depender de tu máquina |
-
-No basta con testear solo el validator: **sin tests de loader, metrics y cli la entrega está incompleta**.
-
-### Mínimos globales
-
-| Requisito | Detalle |
-| --- | --- |
-| Cantidad | **≥ 8 tests** en total del Proyecto I (repartidos entre A y B; no todo en una sola parte) |
-| Por módulo | **≥ 1 test** de `loader`, `validator`, `metrics` y `cli` en **cada** parte (A y B) |
-| Cobertura de código | **≥ 60 %** sobre el código de la(s) app(s) (`ventas_app` / `internet_app` o equivalente), medida con `pytest-cov` |
-| Conceptos clave | Al menos un ejemplo de **AAA + assert**, **`pytest.raises`**, **`parametrize`** y **`fixture`** |
-| Unitarios | La mayoría con datos **en memoria** (fixtures) o `tmp_path`; sin red ni rutas absolutas |
-| Integración | **≥ 1** test marcado `@pytest.mark.integration` (p. ej. CSV real de ventas o muestra B) |
-| Ejecución | Documentada en el README |
-
-Comandos esperados en el README:
+Desde la raíz del proyecto:
 
 ```bash
-pytest -q
-pytest -q -m "not integration"
-pytest --cov=ventas_app --cov=internet_app --cov-report=term-missing --cov-fail-under=60
+uv run python -m parte_a.ventas_app.cli --input parte_a/data/ventas.csv
 ```
 
-> Ajusta los nombres `--cov=...` a tus paquetes reales. El umbral **60 %** es obligatorio (`--cov-fail-under=60`).
+El programa muestra el número de ventas válidas e inválidas, junto con las métricas calculadas.
 
-Dependencia: `pytest-cov` (añádela a tu `requirements.txt`).
+En el dataset proporcionado por el profesor hay 150 ventas:
 
-**Checkpoint Parte A (CSV del curso):** el test de integración sobre `ventas.csv` debe reflejar **140 válidas** y **10 inválidas**.
+- 140 ventas válidas.
+- 10 ventas inválidas.
 
-Sin tests en verde de **loader + validator + metrics + cli** (en A y en B), o sin **cobertura ≥ 60 %**, el Proyecto I se considera **incompleto**.
+## 3. Parte B - Preferencias de destinos turísticos
 
----
+La Parte B utiliza un dataset público de preferencias de viajes.
 
-## CI con GitHub Actions (obligatorio)
+El objetivo es analizar qué destinos turísticos gustan a los usuarios a partir de sus valoraciones.
 
-Referencia de clase: `2_pruebas_y_despliegue/02_ci_github.md`, plantilla `ejemplos/ci_proyecto_i.yml` y ejercicio `ejercicios/E4_ci_github.md`.
+El programa sigue el mismo proceso que la Parte A:
 
-### Requisitos mínimos
+1. Carga el archivo CSV.
+2. Valida las valoraciones.
+3. Separa los registros válidos e inválidos.
+4. Calcula métricas sobre los registros válidos.
+5. Muestra los resultados en la terminal.
 
-1. Fichero **`.github/workflows/ci.yml`** en el repo del Proyecto I.
-2. Triggers: al menos `push` a `main` y `pull_request`.
-3. Steps: checkout → setup Python 3.12 → `pip install -r requirements.txt` → `pytest` con **`--cov-fail-under=60`**.
-4. El workflow debe validar **Parte A y Parte B** (ambos paquetes en `--cov=...` o un comando equivalente).
-5. Evidencia: al menos un run **verde** en la pestaña Actions (enlace o badge en el README).
+### Dataset utilizado
 
-Sin CI verde, el Proyecto I se considera **incompleto** (aunque pytest pase solo en local).
+**Nombre:** Stravl Travel Preference Dataset.
 
----
+**Fuente:** https://github.com/Stravl/Stravl-Data
 
-## Entrega (ambas partes)
+**Autor:** Stravl.
 
-En el mismo repositorio GitHub (o carpeta del Proyecto I):
+**Condiciones de uso:** El repositorio de origen permite utilizar los datos para fines académicos y comerciales. Se debe consultar la documentación original para conocer sus condiciones completas.
 
-| Elemento | Parte A | Parte B |
-| --- | --- | --- |
-| Código modular + CLI | Obligatorio | Obligatorio |
-| Tests unitarios (pytest) | Obligatorio | Obligatorio |
-| CI GitHub Actions | Obligatorio (un workflow para todo el repo) | Obligatorio (cubierto por el mismo workflow) |
-| README con cómo ejecutar código, tests y CI | Obligatorio | Obligatorio (puede ser un README conjunto) |
-| Datos | `ventas.csv` del curso | Muestra + URL de origen |
-| Secretos / claves | No | No |
+Para este proyecto se utiliza una muestra reducida del dataset original, almacenada en:
 
-Checklist mínimo de entrega:
+```text
+parte_b/data/stravl_citybreak_subset.csv
+```
 
-- [ ] Parte A ejecutable de extremo a extremo
-- [ ] Parte B ejecutable de extremo a extremo
-- [ ] `pytest -q` en verde (≥ 8 tests)
-- [ ] Cobertura **≥ 60 %** (`--cov-fail-under=60`)
-- [ ] Tests de **loader**, **validator**, **metrics** y **cli** en Parte A
-- [ ] Tests de **loader**, **validator**, **metrics** y **cli** en Parte B
-- [ ] ≥ 1 test `integration`
-- [ ] `.github/workflows/ci.yml` presente
-- [ ] Actions en **verde** (enlace o badge en el README)
-- [ ] README con comandos de ambas apps, pytest/coverage y CI
-- [ ] Origen y licencia del dataset de internet documentados
-- [ ] Historial Git con sentido (no un único commit gigante el último día)
+La muestra contiene 12.005 registros y 16 columnas.
 
----
+Entre las columnas utilizadas están:
 
-## Rúbrica orientativa (sobre el 10 % del Proyecto I)
+- `user_id`: identificador del usuario.
+- `destination_id`: identificador del destino.
+- `destination`: nombre del destino turístico.
+- `country`: país del destino.
+- `swipe`: indica si al usuario le gusta el destino (`yes` o `no`).
+- `liked`: representa la valoración mediante 1 o 0.
 
-| Criterio | Peso | Notas |
-| --- | --- | --- |
-| Correctitud funcional (A + B) | 20 % | Las dos partes deben correr |
-| Diseño OOP / modularidad | 15 % | Separación loader / validator / metrics / CLI |
-| Manejo de errores y validación | 15 % | Reglas explícitas en ambos dominios |
-| **Tests (pytest)** | **20 %** | loader+validator+metrics+cli en A y B; ≥ 8 tests; cobertura ≥ 60 %; 1 integration |
-| **CI (GitHub Actions)** | **15 %** | Workflow + gate coverage + run verde |
-| Claridad, documentación y dataset B | 10 % | README, URL/licencia, pytest + CI |
-| Uso responsable de Git | 5 % | Commits legibles en ambas partes |
+### Reglas de validación
 
-Si solo se entrega una de las dos partes, faltan tests de algún módulo (`loader` / `validator` / `metrics` / `cli`), la cobertura es inferior al **60 %**, o **CI no está verde**, la nota del Proyecto I queda **incompleta** (no se considera entregado el proyecto).
+Una valoración se considera válida cuando:
+
+- `user_id` no es nulo ni está vacío.
+- `destination_id` representa un número entero mayor o igual que 0.
+- `destination` no es nulo ni está vacío.
+- `country` no es nulo ni está vacío.
+- `swipe` contiene únicamente `yes` o `no`.
+- `liked` contiene únicamente 0 o 1.
+- Existe coherencia entre `swipe` y `liked`.
+
+La coherencia se comprueba de la siguiente manera:
+
+- Si `swipe = yes`, entonces `liked = 1`.
+- Si `swipe = no`, entonces `liked = 0`.
+
+### Métricas calculadas
+
+Se calculan tres métricas:
+
+1. **Total de likes:** suma de todas las valoraciones positivas.
+2. **Likes por país:** número de likes recibidos por los destinos de cada país.
+3. **Likes por destino:** número de likes recibidos por cada destino turístico.
+
+Las métricas se calculan utilizando únicamente los registros válidos.
+
+### Ejecución
+
+Desde la raíz del proyecto:
+
+```bash
+uv run python -m parte_b.citybreak_app.cli --input parte_b/data/stravl_citybreak_subset.csv
+```
+
+El programa muestra las valoraciones válidas e inválidas y las tres métricas calculadas.
+
+## 4. Instalación de dependencias
+
+El proyecto utiliza Python 3.12 o superior y uv para gestionar las dependencias.
+
+Las principales librerías utilizadas son:
+
+- pandas
+- numpy
+- pytest
+- pytest-cov
+
+Para instalar las dependencias, ejecutar desde la raíz del proyecto:
+
+```bash
+uv sync
+```
+
+Las dependencias están definidas en `pyproject.toml` y sus versiones se gestionan mediante `uv.lock`.
+
+## 5. Tests con pytest
+
+Se han creado tests para los cuatro módulos principales de cada parte:
+
+- `loader.py`
+- `validator.py`
+- `metrics.py`
+- `cli.py`
+
+Los tests comprueban la carga de datos, la validación de registros, los cálculos de métricas y el funcionamiento del programa principal.
+
+Se utilizan herramientas de pytest como:
+
+- `assert`
+- `pytest.raises`
+- `pytest.mark.parametrize`
+- `monkeypatch`
+- `capsys`
+
+También se incluye un test de integración que comprueba el funcionamiento conjunto de varios módulos.
+
+### Ejecutar todos los tests
+
+```bash
+uv run python -m pytest -q
+```
+
+### Ejecutar únicamente los tests de la Parte A
+
+```bash
+uv run python -m pytest -q parte_a/tests/
+```
+
+### Ejecutar únicamente los tests de la Parte B
+
+```bash
+uv run python -m pytest -q parte_b/tests/
+```
+
+### Ejecutar los tests sin los de integración
+
+```bash
+uv run python -m pytest -q -m "not integration"
+```
+
+### Ejecutar únicamente los tests de integración
+
+```bash
+uv run python -m pytest -q -m integration
+```
+
+## 6. Cobertura de código
+
+Se utiliza `pytest-cov` para medir el porcentaje de código ejecutado durante los tests.
+
+El profesor exige una cobertura mínima del 60 %.
+
+Para comprobar la cobertura de las dos partes:
+
+```bash
+uv run python -m pytest -q --cov=parte_a.ventas_app --cov=parte_b.citybreak_app --cov-report=term-missing --cov-fail-under=60
+```
+
+En la última ejecución se obtuvieron los siguientes resultados:
+
+- **33 tests superados.**
+- **90,18 % de cobertura total.**
+
+Por tanto, se supera el mínimo de cobertura exigido.
+
+## 7. Integración continua con GitHub Actions
+
+El proyecto utiliza GitHub Actions para ejecutar automáticamente los tests.
+
+La configuración se encuentra en:
+
+```text
+.github/workflows/ci.yml
+```
+
+El workflow está configurado para ejecutarse:
+
+- Cuando se realiza un `push` a la rama `main`.
+- Cuando se crea o actualiza un `pull_request`.
+
+GitHub Actions realiza los siguientes pasos:
+
+1. Descarga el código del repositorio.
+2. Configura Python 3.12.
+3. Instala uv.
+4. Instala las dependencias del proyecto.
+5. Ejecuta los tests de ambas partes.
+6. Comprueba que la cobertura total sea al menos del 60 %.
+
