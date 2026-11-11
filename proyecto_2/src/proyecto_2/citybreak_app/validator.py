@@ -34,18 +34,24 @@ def is_valid_swipe(row):
     if str(row["country"]).strip() == "":
         return False
 
-    # Comprobar que destination_id sea un int >= 0
-    try:
-        destination_id = int(row["destination_id"])
-    except (ValueError, TypeError):
+    # Comprobar que destination_id sea un entero no negativo
+    value = row["destination_id"]
+
+    if pd.isna(value):
         return False
 
-    if pd.isna(row["destination_id"]):
+    try:
+        destination_id = int(value)
+
+        # Rechazar valores con parte decimal
+        if float(value) != destination_id:
+            return False
+
+    except (ValueError, TypeError, OverflowError):
         return False
 
     if destination_id < 0:
         return False
-
     # Comprobar que swipe sea yes o no
     if row["swipe"] not in ["yes", "no"]:
         return False
