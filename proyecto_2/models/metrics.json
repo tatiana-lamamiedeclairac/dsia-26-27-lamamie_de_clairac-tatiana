@@ -1,0 +1,62 @@
+{
+    "selection_metric": "roc_auc",
+    "best_model": "LogisticInteractions",
+    "validation_comparison": {
+        "DummyClassifier": {
+            "accuracy": 0.5480984340044742,
+            "precision": 0.5480984340044742,
+            "recall": 1.0,
+            "f1": 0.708092485549133,
+            "roc_auc": 0.5,
+            "average_precision": 0.5480984340044742
+        },
+        "LogisticRegression": {
+            "accuracy": 0.5928411633109619,
+            "precision": 0.6099476439790575,
+            "recall": 0.713265306122449,
+            "f1": 0.6575729068673566,
+            "roc_auc": 0.6154134673671449,
+            "average_precision": 0.6448755766927117
+        },
+        "RandomForest": {
+            "accuracy": 0.5917225950782998,
+            "precision": 0.5978090766823161,
+            "recall": 0.7795918367346939,
+            "f1": 0.6767050487156776,
+            "roc_auc": 0.6071996868054153,
+            "average_precision": 0.6401458458315965
+        },
+        "ExtraTrees": {
+            "accuracy": 0.5894854586129754,
+            "precision": 0.6026711185308848,
+            "recall": 0.736734693877551,
+            "f1": 0.6629935720844812,
+            "roc_auc": 0.6153313800767832,
+            "average_precision": 0.6532540104437351
+        },
+        "LogisticInteractions": {
+            "accuracy": 0.5950782997762863,
+            "precision": 0.6111111111111112,
+            "recall": 0.7183673469387755,
+            "f1": 0.6604127579737336,
+            "roc_auc": 0.6272719236209335,
+            "average_precision": 0.6573254129678814
+        }
+    },
+    "test": {
+        "accuracy": 0.6190721649484536,
+        "precision": 0.6612903225806451,
+        "recall": 0.7199297629499561,
+        "f1": 0.689365279529214,
+        "roc_auc": 0.6188253489108763,
+        "average_precision": 0.6710158238587054
+    },
+    "dataset": {
+        "total_rows": 12005,
+        "valid_rows": 12005,
+        "invalid_rows": 0,
+        "train_rows": 8277,
+        "validation_rows": 1788,
+        "test_rows": 1940
+    }
+}
