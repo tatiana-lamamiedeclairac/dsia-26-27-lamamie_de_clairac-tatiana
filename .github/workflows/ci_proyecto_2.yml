@@ -1,0 +1,40 @@
+
+name: CI Proyecto II - CityBreak App
+
+# Ejecutar los tests al subir cambios o crear un Pull Request
+on:
+  push:
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    # Los comandos se ejecutarán dentro de proyecto_2
+    defaults:
+      run:
+        working-directory: proyecto_2
+
+    steps:
+      # 1. Descargar el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Instalar uv
+      - name: Install uv
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          working-directory: proyecto_2
+          enable-cache: true
+
+      # 3. Preparar la versión de Python del proyecto
+      - name: Set up Python
+        run: uv python install
+
+      # 4. Instalar las dependencias
+      - name: Install dependencies
+        run: uv sync --frozen --dev
+
+      # 5. Ejecutar los tests
+      - name: Run pytest
+        run: uv run --frozen python -m pytest -q tests/
